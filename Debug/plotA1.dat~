@@ -1,0 +1,5 @@
+# plotA1.dat
+# Data file for GNUPLOT
+# Test A (Speed Test)
+# - Module 1: Increasing the no. of point correspondences
+# nPts	t-DLT	t-Posit	t-OI	t-LM
