@@ -1,9 +1,30 @@
-/*--------------------------------------------------------------------------
+/*------------------------------------------------------------------------------------------------
   [Pose Estimation]
   Author: Shehryar Khurshid
   <shehryar87@hotmail.com>
 
---------------------------------------------------------------------------*/
+        E-Perspective-n-Point (EPnP)
+        Computes the pose (R t) from point correspondences
+
+        Usage:
+                        pose = EPNP(object, image, camera)[1]
+
+        Input:
+                        object  :    (4 x n) 3D homogeneous object points (n: no. of object points)
+                        imgage  :    (3 x n) 2D homogeneous image points (n: no. of image points)
+                        camera  :    (3 x 3) Camera initinsic matrix
+
+        Output:
+                        pose.R:      (3 x 3) Rotation matrix
+                        pose.T:      (3 x 1) Translation vector
+
+        Implementation of the algorithms described in:
+
+        [1]             V. Lepetit, F. Moreno-Noguer, and P. Fua. EPnP: An accurate
+                        O(n) solution to the pnp problem. Int. J. Comput. Vision,
+                        81:155-166, February 2009. 7
+
+------------------------------------------------------------------------------------------------*/
 
 #include <iostream>
 #include <vector>

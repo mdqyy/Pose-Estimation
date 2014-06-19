@@ -3,6 +3,30 @@
   Author: Shehryar Khurshid
   <shehryar87@hotmail.com>
 
+        POSe from orthography and scaling with ITerations (POSIT)
+        Computes the pose (R t) from point correspondences
+
+        Usage:
+                        pose = POSIT(object, image, camera, initPose, maxIters)[1]
+
+        Input:
+                        object  :    (4 x n) 3D homogeneous object points (n: no. of object points)
+                        imgage  :    (3 x n) 2D homogeneous image points (n: no. of image points)
+                        camera  :    (3 x 3) Camera initinsic matrix
+                        initPose:    (3 x 4) Initial pose estimate
+                        maxIters:    Maximum no. of iterations
+
+        Output:
+                        pose.R:      (3 x 3) Rotation matrix
+                        pose.T:      (3 x 1) Translation vector
+
+        Implementation of the algorithm described in:
+
+        [1]             Daniel F. DeMenthon , Larry S. Davis,
+                        "Recognition and Tracking of 3D Objects by 1D Search"
+                        Proc. Image Understanding Workshop, Washington, DC,
+                        pp. 653-659, 1993
+
 --------------------------------------------------------------------------*/
 
 #include <iostream>

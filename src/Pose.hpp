@@ -102,7 +102,7 @@ pose coplanarLM(object r3ObjectPoints, image r2ImagePoints, camera m3Camera, pos
 
 /* OI */
 pose OI(object r3ObjectPoints, image r2ImagePoints, camera m3Camera, pose pInitPose, unsigned uiMaxIterations);
-pose coplanarOI(object r3ObjectPoints, image r2ImagePoints, camera m3Camera, pose pInitPose, unsigned uiMaxIterations);
+pose initGuessOI(object r3ObjectPoints, image r2ImagePoints, camera m3Camera);
 
 /* Helper Functions */
 double quaternionError(Vector4d v4dQ1, Vector4d v4dQ2);

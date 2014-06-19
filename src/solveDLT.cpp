@@ -1,9 +1,34 @@
-/*--------------------------------------------------------------------------
+/*------------------------------------------------------------------------------------------------
   [Pose Estimation]
   Author: Shehryar Khurshid
   <shehryar87@hotmail.com>
 
---------------------------------------------------------------------------*/
+        Direct Linear Transform (DLT)
+        Computes the pose (R t) from point correspondences
+
+        Usage:
+                        pose = DLT(object, image, camera)[1][2]
+                        pose = normalizedDLT(object, image, camera)[2]
+                        pose = coplanarDLTnormalizedDLT(object, image, camera)[2]
+
+        Input:
+                        object  :    (4 x n) 3D homogeneous object points (n: no. of object points)
+                        imgage  :    (3 x n) 2D homogeneous image points (n: no. of image points)
+                        camera  :    (3 x 3) Camera initinsic matrix
+
+        Output:
+                        pose.R:      (3 x 3) Rotation matrix
+                        pose.T:      (3 x 1) Translation vector
+
+        Implementation of the algorithms described in:
+
+        [1]             E. Trucco and A. Verri, "Introductory Techniques for 3-D
+                        Computer Vision," pp. 132-134, 1998.
+
+        [2]             Hartley, R., & Zisserman, A. (2000). Multiple view geometry
+                        in computer vision. Cambridge: Cambridge University Press.
+
+------------------------------------------------------------------------------------------------*/
 
 #include <iostream>
 #include <sys/time.h>

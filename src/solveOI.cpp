@@ -1,9 +1,33 @@
-/*--------------------------------------------------------------------------
+/*------------------------------------------------------------------------------------------------
   [Pose Estimation]
   Author: Shehryar Khurshid
   <shehryar87@hotmail.com>
 
---------------------------------------------------------------------------*/
+        Orthogonal Iteration Algorithm (OI)
+        Computes the pose (R t) from point correspondences
+
+        Usage:
+                        pose = OI(object, image, camera, initPose, maxIters)[1]
+
+        Input:
+                        object  :    (4 x n) 3D homogeneous object points (n: no. of object points)
+                        imgage  :    (3 x n) 2D homogeneous image points (n: no. of image points)
+                        camera  :    (3 x 3) Camera initinsic matrix
+                        initPose:    (3 x 4) Initial pose estimate
+                        maxIters:    Maximum no. of iterations
+
+        Output:
+                        pose.R:      (3 x 3) Rotation matrix
+                        pose.T:      (3 x 1) Translation vector
+
+        Implementation of the algorithm described in:
+
+        [1]             Chien-Ping Lu, Gregory D. Hager, Eric Mjolsness,
+                        "Fast and Globally Convergent Pose Estimation from Video Images"
+                        IEEE TRANSACTIONS ON PATTERN ANALYSIS AND MACHINE INTELLIGENCE,
+                        VOL. 22, NO. 6, JUNE 2000
+
+------------------------------------------------------------------------------------------------*/
 
 #include <iostream>
 #include <sys/time.h>
@@ -17,6 +41,82 @@
 
 using namespace std;
 using namespace Eigen;
+
+pose initGuessOI(object r3ObjectPoints, image r2ImagePoints, camera m3Camera)
+{
+  pose se3Pose;
+
+  if (r3ObjectPoints.getnCols() != r2ImagePoints.getnCols())
+  {
+    cout << "Error OI(): Point correspondence mismatch" << endl;
+  }
+
+  MatrixXd mxdObjectPoints = r3ObjectPoints.getObjectPoints();
+  MatrixXd mxdImagePoints = r2ImagePoints.getImagePoints();
+  Matrix3d m3dK = m3Camera.getIntrinsic();
+
+  unsigned uinPts = mxdObjectPoints.cols();
+
+  MatrixXd mxdCrtdImage = m3dK.inverse() * mxdImagePoints;
+  MatrixXd mxdImage = mxdCrtdImage;
+  MatrixXd mxdObject = mxdObjectPoints.block(0,0,3,uinPts);
+
+  Vector3d sumqi = mxdImage.rowwise().sum();
+  Vector3d sumpi = mxdObject.rowwise().sum();
+
+  Vector3d centqi = sumqi/((double)uinPts);
+  Vector3d centpi = sumpi/((double)uinPts);
+
+  MatrixXd centrdqi = mxdImage - centqi * MatrixXd::Ones(1,uinPts);
+  MatrixXd centrdpi = mxdObject - centpi * MatrixXd::Ones(1,uinPts);
+
+  Matrix3d m3dsumVi = Matrix3d::Zero();
+
+  vector<Matrix3d> vm3dV(uinPts);
+  unsigned uidx = 0;
+
+  for (vector<Matrix3d>::iterator it=vm3dV.begin(); it!=vm3dV.end(); ++it)
+  {
+    Vector3d v3dv = mxdImage.col(uidx);
+    *it = (v3dv*v3dv.transpose())/(v3dv.norm()*v3dv.norm());
+    m3dsumVi += *it;
+
+    uidx += 1;
+  }
+
+  Matrix3d m3dRk;
+  Vector3d v3dtk;
+
+  Matrix3d m3dMk0 = centrdqi * centrdpi.transpose();
+
+  JacobiSVD<MatrixXd> svd;
+  svd.compute(m3dMk0, ComputeThinU | ComputeThinV);
+
+  m3dRk = svd.matrixU() * Matrix3d::Identity() * svd.matrixV().transpose();
+
+  if (m3dRk.determinant() < 0)
+  {
+    MatrixXd m3dU = -1*svd.matrixU();
+    m3dU.row(2) = svd.matrixU().row(2);
+    m3dU.col(2) = svd.matrixU().col(2);
+
+    m3dRk = m3dU * Matrix3d::Identity() * -1*svd.matrixV().transpose();
+  }
+
+  Vector3d v3dsumViRpi = Vector3d::Zero();
+
+  uidx = 0;
+  for (vector<Matrix3d>::iterator it=vm3dV.begin(); it!=vm3dV.end(); ++it)
+  {
+    v3dsumViRpi += *it * m3dRk * mxdObject.col(uidx);
+    uidx += 1;
+  }
+
+  v3dtk = (1/(double)uinPts)*(Matrix3d::Identity() - (1/(double)uinPts)*m3dsumVi).inverse() * (v3dsumViRpi - Matrix3d::Identity()*m3dRk*sumpi);
+  se3Pose.setPose(m3dRk,v3dtk);
+
+  return se3Pose;
+}
 
 pose OI(object r3ObjectPoints, image r2ImagePoints, camera m3Camera, pose pInitPose, unsigned uiMaxIterations)
 {
