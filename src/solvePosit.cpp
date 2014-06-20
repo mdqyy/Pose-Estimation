@@ -3,7 +3,7 @@
   Author: Shehryar Khurshid
   <shehryar87@hotmail.com>
 
-        POSe from orthography and scaling with ITerations (POSIT)
+        Pose from Orthography and Scaling with ITerations (POSIT)
         Computes the pose (R t) from point correspondences
 
         Usage:
