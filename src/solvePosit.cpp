@@ -7,14 +7,13 @@
         Computes the pose (R t) from point correspondences
 
         Usage:
-                        pose = POSIT(object, image, camera, initPose, maxIters)[1]
-                        pose = coplanarPOSIT(object, image, camera, initPose, maxIters)[2]
+                        pose = POSIT(object, image, camera, maxIters)[1]
+                        pose = coplanarPOSIT(object, image, camera, maxIters)[2]
 
         Input:
                         object  :    (4 x n) 3D homogeneous object points (n: no. of object points)
                         imgage  :    (3 x n) 2D homogeneous image points (n: no. of image points)
                         camera  :    (3 x 3) Camera initinsic matrix
-                        initPose:    (3 x 4) Initial pose estimate
                         maxIters:    Maximum no. of iterations
 
         Output:
