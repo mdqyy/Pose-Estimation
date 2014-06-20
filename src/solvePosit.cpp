@@ -8,6 +8,7 @@
 
         Usage:
                         pose = POSIT(object, image, camera, initPose, maxIters)[1]
+                        pose = coplanarPOSIT(object, image, camera, initPose, maxIters)[2]
 
         Input:
                         object  :    (4 x n) 3D homogeneous object points (n: no. of object points)
@@ -26,6 +27,11 @@
                         "Recognition and Tracking of 3D Objects by 1D Search"
                         Proc. Image Understanding Workshop, Washington, DC,
                         pp. 653-659, 1993
+                        
+        [2]             D. Oberkampf, D. F. DeMenthon, and L. S. Davis,
+                        “Iterative pose estimation using coplanar feature points,” 
+                        Computer Vision and Image Understanding, 
+                        vol. 63, no. 3, pp. 495–511, May 1996.
 
 --------------------------------------------------------------------------*/
 
